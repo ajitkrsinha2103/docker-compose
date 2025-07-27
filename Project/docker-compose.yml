@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  webapp1:
+    build: ./webapp
+    expose:
+      - "8000"  # expose internally, NOT to host
+    deploy:
+      replicas: 4  # scale using Compose v3 deploy section (Swarm or override manually)
+    networks:
+      - webnet
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8000:80"  # public port
+    depends_on:
+      - webapp1
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
